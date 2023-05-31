@@ -15,7 +15,7 @@ namespace HashTable
 
     class Program
     {
-        public static void Main(String[] args)
+        static void Main(String[] args)
         {
             // Create an array of LinkedLists to store words at each index
             LinkedList<MyMapNode<string, int>>[] hashTable = new LinkedList<MyMapNode<string, int>>[100];
@@ -61,6 +61,9 @@ namespace HashTable
                 }
             }
 
+            // Remove the word "avoidable" from the hash table
+            RemoveWordFromHashTable(hashTable, "avoidable");
+
             // Display the words and their frequencies
             for (int i = 0; i < hashTable.Length; i++)
             {
@@ -74,6 +77,28 @@ namespace HashTable
                 }
             }
             Console.ReadKey();
+        }
+
+        static void RemoveWordFromHashTable(LinkedList<MyMapNode<string, int>>[] hashTable, string word)
+        {
+            // Get the index for the word using the hash code
+            int index = Math.Abs(word.GetHashCode() % 100);
+
+            LinkedList<MyMapNode<string, int>> linkedList = hashTable[index];
+            if (linkedList != null)
+            {
+                // Find and remove the node with the specified word from the linked list
+                LinkedListNode<MyMapNode<string, int>> currentNode = linkedList.First;
+                while (currentNode != null)
+                {
+                    if (currentNode.Value.Key.Equals(word))
+                    {
+                        linkedList.Remove(currentNode);
+                        break;
+                    }
+                    currentNode = currentNode.Next;
+                }
+            }
         }
     }
 }
