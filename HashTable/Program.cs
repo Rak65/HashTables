@@ -15,19 +15,29 @@ namespace HashTable
 
     class Program
     {
-        static void Main()
+        public static void Main(String[] args)
         {
-            // Create a LinkedList to store key-value pairs
-            LinkedList<MyMapNode<string, int>> linkedList = new LinkedList<MyMapNode<string, int>>();
+            // Create an array of LinkedLists to store words at each index
+            LinkedList<MyMapNode<string, int>>[] hashTable = new LinkedList<MyMapNode<string, int>>[100];
 
-            string sentence = "To be or not to be";
-            string[] words = sentence.Split(' ');
+            string phrase = "Paranoids are not paranoid because they are paranoid but because they keep putting themselves deliberately into paranoid avoidable situations";
+            string[] words = phrase.Split(' ');
 
             foreach (string word in words)
             {
+                // Get the index for the word using the hash code
+                int index = Math.Abs(word.GetHashCode() % 100);
+
+                // Create a new LinkedList at the index if it doesn't exist
+                if (hashTable[index] == null)
+                {
+                    hashTable[index] = new LinkedList<MyMapNode<string, int>>();
+                }
+
+                LinkedList<MyMapNode<string, int>> linkedList = hashTable[index];
                 bool found = false;
 
-                // Check if the word already exists in the linked list
+                // Check if the word already exists in the linked list at the index
                 foreach (MyMapNode<string, int> node in linkedList)
                 {
                     if (node.Key.Equals(word))
@@ -52,9 +62,16 @@ namespace HashTable
             }
 
             // Display the words and their frequencies
-            foreach (MyMapNode<string, int> node in linkedList)
+            for (int i = 0; i < hashTable.Length; i++)
             {
-                Console.WriteLine($"Word: {node.Key}, Frequency: {node.Value}");
+                LinkedList<MyMapNode<string, int>> linkedList = hashTable[i];
+                if (linkedList != null)
+                {
+                    foreach (MyMapNode<string, int> node in linkedList)
+                    {
+                        Console.WriteLine($"Word: {node.Key}, Frequency: {node.Value}");
+                    }
+                }
             }
             Console.ReadKey();
         }
